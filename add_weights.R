@@ -1,5 +1,47 @@
 #### Weights ####
 
+survey_march_strata <- survey_march %>% 
+  group_by(gender, age_group, university_education) %>% 
+  summarise(count = n()) %>%
+  mutate(proportion = count / nrow(survey_march),
+         source = "March Survey")
+
+
+survey_feb_strata <- survey_feb %>% 
+  group_by(gender, age_group, university_education) %>% 
+  summarise(count = n()) %>%
+  mutate(proportion = count / nrow(survey_feb),
+         source = "February Survey")
+
+survey_aug_strata <- survey_aug %>% 
+  group_by(gender, age_group, university_education) %>% 
+  summarise(count = n()) %>%
+  mutate(proportion = count / nrow(survey_aug),
+         source = "August Survey")
+
+survey_jul_strata <- survey_july %>% 
+  group_by(gender, age_group, university_education) %>% 
+  summarise(count = n()) %>%
+  mutate(proportion = count / nrow(survey_july),
+         source = "July Survey")
+
+survey_sept_strata <- survey_sept %>% 
+  group_by(gender, age_group, university_education) %>% 
+  summarise(count = n()) %>%
+  mutate(proportion = count / nrow(survey_sept),
+         source = "September Survey")
+
+pop_strata <- ru_population_frame %>% 
+  ungroup() %>% 
+  mutate(proportion = Freq/sum(Freq),
+         source = "Census 2020")
+
+combined_strata <- rbind(survey_march_strata, survey_feb_strata,
+                                            survey_aug_strata, survey_jul_strata,
+                                            survey_sept_strata, pop_strata) 
+
+
+
 #### create weights with survey package ####
 
 ### March
@@ -48,21 +90,7 @@ survey_sept$weight_poststratify <- weights(weighted)
 
 #### Weigts created manually ####
 
-pop_strata <- ru_population_frame %>% 
-  ungroup() %>% 
-  mutate(proportion = Freq/sum(Freq),
-         source = "Census 2020")
-
-combined_strata <- combined_strata <- rbind(survey_march_strata,  pop_strata) 
-
 ### March
-survey_march_strata <- survey_march %>% 
-  group_by(gender, age_group, university_education) %>% 
-  summarise(count = n()) %>%
-  mutate(proportion = count / nrow(survey_march),
-         source = "March Survey")
-
-
 weights_march_strata_man <- left_join(survey_march_strata,
                                       pop_strata,
                                       c("gender", "age_group", "university_education")) %>% 
