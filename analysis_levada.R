@@ -1,7 +1,7 @@
 #### Analysis Levada 2021####
 
 #### load and prepare data###
-data <- read_sav("21cur.sav")
+data <- read_sav("data/21cur.sav")
 
 data = data %>% 
   mutate(
